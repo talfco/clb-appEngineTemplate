@@ -84,10 +84,10 @@ public class CustomerServletTest {
 	    
 	    // A customer object test entry
 	    Customer customerIn = new Customer();
-	    customerIn.setName("Felix");
-	    customerIn.setAddress("Kuestahler");
-	    customerIn.setDate(new Date());
-	    customerIn.setDate1(new LocalDateTime());
+	    customerIn.name = "Felix";
+	    customerIn.address = "Kuestahler";
+	    customerIn.date = new Date();
+	    customerIn.date1 = new LocalDateTime();
 	    String customerInJSON = (new GsonWrapper()).getGson().toJson(customerIn);
 	    
 	    logger.log(Level.INFO, "Going to persist {0}", customerInJSON);
@@ -100,8 +100,8 @@ public class CustomerServletTest {
 	    customerServlet.doPost(request, response);
 
 	    Customer customerOut =  (new GsonWrapper()).getGson().fromJson(stringWriter.toString(), Customer.class); 
-	    assertEquals("Checking name", customerOut.getName(), customerIn.getName());
-	    assertEquals("Checking id", customerOut.get_id() > 0,true);
+	    assertEquals("Checking name", customerOut.name, customerIn.name);
+	    assertEquals("Checking id", customerOut._id > 0,true);
 	    
 	    // TEST: Check the retrieval of the collections "GET" 
 	    stringWriter = new StringWriter();
@@ -118,26 +118,26 @@ public class CustomerServletTest {
 
 	    // TEST: Check the retrieval of a single entry "GET"
 	    stringWriter = new StringWriter();
-	    when(request.getPathInfo()).thenReturn("/"+customerOut.get_id());
+	    when(request.getPathInfo()).thenReturn("/"+customerOut._id);
 	    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
 	    
 	    customerServlet.doGet(request, response);
 	    
 	    // Expect a single entry which can be converted in our domain object and correct attributes
 	    customerOut =  (new GsonWrapper()).getGson().fromJson(stringWriter.toString(), Customer.class);
-	    assertEquals("Checking Name", customerOut.getName(), customerIn.getName());
-	    assertEquals("Checking Surname", customerOut.getSurname(), customerIn.getSurname());
+	    assertEquals("Checking Name", customerOut.name, customerIn.name);
+	    assertEquals("Checking Surname", customerOut.surname, customerIn.surname);
 	    
 	    // TEST: Going to delete the entry "DELETE"
 	    stringWriter = new StringWriter();
-	    when(request.getPathInfo()).thenReturn("/"+customerOut.get_id());
+	    when(request.getPathInfo()).thenReturn("/"+customerOut._id);
 	    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
 	    
 	    customerServlet.doDelete(request, response);
 
 	    // We shouldn't get any data back (i.e. deleted)
 	    stringWriter = new StringWriter();
-	    when(request.getPathInfo()).thenReturn("/"+customerOut.get_id());
+	    when(request.getPathInfo()).thenReturn("/"+customerOut._id);
 	    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
 	    
 	    customerServlet.doGet(request, response);

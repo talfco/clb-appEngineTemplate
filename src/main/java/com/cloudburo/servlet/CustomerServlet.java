@@ -1,3 +1,20 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (C) 2013 Felix Kuestahler <felix@cloudburo.com> http://cloudburo.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, 
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of 
+ * the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ */
 package com.cloudburo.servlet;
 
 import java.io.IOException;
@@ -8,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,45 +38,28 @@ import com.cloudburo.entity.OfyService;
 import com.cloudburo.entity.Customer;
 
 @SuppressWarnings("serial")
-public class CustomerServlet extends HttpServlet {
+public class CustomerServlet extends CoreServlet {
 
 	private static final Logger logger = Logger.getLogger(CustomerServlet.class.getCanonicalName());
-	private static final int HTTP_STATUSCODE_SUCCESS = 200;
-	private static final int HTTP_STATUSCODE_NOTFOUND = 404;
-	private static final int HTTP_STATUSCODE_BADREQUEST = 400;
-	
-	
 
-	private static int sResponseLimit = 20;
-
-	private class MetaRecord {
-
-		@SuppressWarnings("unused")
-		String _cursor;
-
-		MetaRecord(String cursor) {
-			_cursor = cursor;
-		}
-	}
-	
-	public static void setResponseResultSize(int limit) {
-		sResponseLimit = limit;
-	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
 		logger.log(Level.INFO, "Going to fetch {0} objects", Customer.class.getName());
 		logger.log(Level.INFO, "Pathinfo {0}", req.getPathInfo());
+		// Partial response
+		String filter= req.getParameter("filter");
+		logger.log(Level.INFO, "Filter parameter {0}", filter);
 		// Retrieving the records from the persistent store
-		// TODO: If pathInfo == null then query all otherwise fetch one entry
-		if (req.getPathInfo() == null) {
-			Query<Customer> query = OfyService.ofy().load().type(Customer.class).limit(sResponseLimit);
+		// If pathInfo == null then query all otherwise fetch one entry
+		if (req.getPathInfo() == null || req.getPathInfo().length()==1) {
+			Query<?> query = OfyService.ofy().load().type(Customer.class).limit(sResponseLimit);
 			String cursorStr = req.getParameter("cursor");
 			if (cursorStr != null)
 				query = query.startAt(Cursor.fromWebSafeString(cursorStr));
 			int nrRec = 0;
-			QueryResultIterator<Customer> iterator = query.iterator();
+			QueryResultIterator<?> iterator = query.iterator();
 
 			Collection collection = new ArrayList();		
 			while (iterator.hasNext()) {
@@ -75,20 +75,30 @@ public class CustomerServlet extends HttpServlet {
 			resp.getWriter().print((new GsonWrapper()).getGson().toJson(collection));
 		} else {
 			StringTokenizer tok = new StringTokenizer(req.getPathInfo(),"/");
+			// This must be the identifier
 			if (tok.countTokens() == 1) {
 				Key<Customer> key = Key.create(Customer.class, Long.parseLong(tok.nextToken()));
 				logger.log(Level.INFO, "Going to get customer {0}", key);
 				Customer customer = OfyService.ofy().load().type(Customer.class).filterKey(key).first().now();
 				if (customer != null) {
-					resp.getWriter().print((new GsonWrapper()).getGson().toJson(customer));
+					if (filter == null || filter.equals(""))
+						resp.getWriter().print((new GsonWrapper()).getGson().toJson(customer));
+					else
+						try {
+							resp.getWriter().print(partialResponse(filter,customer));
+						} catch (Exception e) {
+							resp.sendError(resp.SC_BAD_REQUEST);
+							resp.getWriter().print(errorMsg(e.getMessage(),"0","0"));
+							// This shouldn't happen at all IllegalAccessException
+						}
 				}
 				else {
 					resp.getWriter().print("{}");
-				    resp.setStatus(HTTP_STATUSCODE_NOTFOUND);
+				    resp.setStatus(resp.SC_NOT_FOUND);
 				}
 			} else {
 				// FIXME: We have to throw an error that we don't understand this
-				resp.sendError(HTTP_STATUSCODE_BADREQUEST);
+				resp.sendError(resp.SC_BAD_REQUEST);
 			}
 			
 		}
@@ -104,7 +114,7 @@ public class CustomerServlet extends HttpServlet {
 		logger.log(Level.INFO, "Updating Customer");
 		Customer customer = (new GsonWrapper()).getGson().fromJson(req.getReader(),Customer.class);
 		OfyService.ofy().save().entity(customer).now();
-		logger.log(Level.INFO, "Persisted Customer with id {0}",customer.get_id());
+		logger.log(Level.INFO, "Persisted Customer with id {0}",customer._id);
 		resp.getWriter().print((new GsonWrapper()).getGson().toJson(customer));
 	}
 
@@ -126,7 +136,7 @@ public class CustomerServlet extends HttpServlet {
 		logger.log(Level.INFO, "Creating Customer");
 		Customer customer = (new GsonWrapper()).getGson().fromJson(req.getReader(),Customer.class);
 		OfyService.ofy().save().entity(customer).now();
-		logger.log(Level.INFO, "Persisted Customer with id {0}",customer.get_id());
+		logger.log(Level.INFO, "Persisted Customer with id {0}",customer._id);
 		resp.getWriter().print((new GsonWrapper()).getGson().toJson(customer));
 	}
 }

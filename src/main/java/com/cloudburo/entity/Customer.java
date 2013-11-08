@@ -1,3 +1,20 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (C) 2013 Felix Kuestahler <felix@cloudburo.com> http://cloudburo.com
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation 
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, 
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of 
+ * the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO 
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ */
 package com.cloudburo.entity;
 
 import com.googlecode.objectify.annotation.Entity;
@@ -9,113 +26,19 @@ import org.joda.time.LocalDateTime;
 
 @Entity
 public class Customer {
-	@Id Long _id;
-	String name;
-	String surname;
-	String email;
-	String address;
-	String plz;
-	String location;
-	Date date;
-	LocalDateTime date1;
-	
-	public void setDate(Date aDate) {
-		date =aDate;
-	}
-	
-	public Date getDate() {
-		return date;
-	}
-	
-	public void setDate1(LocalDateTime aDate) {
-		date1 =aDate;
-	}
-	
-	public LocalDateTime getDate1() {
-		return date1;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public void setPlz(String plz) {
-		this.plz = plz;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
-	public void setBirthdate(String birthdate) {
-		this.birthdate = birthdate;
-	}
-
-	public void setCitizenship(String citizenship) {
-		this.citizenship = citizenship;
-	}
-
-	public void setMobile(String mobile) {
-		this.mobile = mobile;
-	}
-	String telephone;
-	String birthdate;
-	String citizenship;
-	String mobile;
-	
-	public void set_id(Long id) {
-		_id = id;
-	}
-	
-	public Long get_id() {
-		return _id;
-	}
-	public String getName() {
-		return name;
-	}
-	public String getSurname() {
-		return surname;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public String getAddress() {
-		return address;
-	}
-	public String getPlz() {
-		return plz;
-	}
-	public String getLocation() {
-		return location;
-	}
-	public String getTelephone() {
-		return telephone;
-	}
-	public String getBirthdate() {
-		return birthdate;
-	}
-	public String getCitizenship() {
-		return citizenship;
-	}
-	public String getMobile() {
-		return mobile;
-	}
+	@Id public Long _id;
+	public String name;
+	public String surname;
+	public String email;
+	public String address;
+	public String plz;
+	public String location;
+	public Date date;
+	public LocalDateTime date1;
+	public String telephone;
+	public String birthdate;
+	public String citizenship;
+	public String mobile;
 	
 	
 	
