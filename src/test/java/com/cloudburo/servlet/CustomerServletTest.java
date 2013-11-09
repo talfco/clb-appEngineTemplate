@@ -60,6 +60,7 @@ public class CustomerServletTest {
 		          .setEnvAuthDomain("localhost")
 		          .setEnvEmail("test@localhost");
 	
+	  @SuppressWarnings("static-access")
 	  @Before
 	  public void setupCustomerServlet() {
 	    helper.setUp();
@@ -67,7 +68,7 @@ public class CustomerServletTest {
 	    // Set to false if you want to persist the data
 	    dsService.setNoStorage(true);
 	    customerServlet = new CustomerServlet();
-	    // We set the response result size to 3 to simulare the paging
+	    // We set the response result size to 3 to simulate the paging
 	 	CustomerServlet.setResponseResultSize(3);
 	  }
 	  
