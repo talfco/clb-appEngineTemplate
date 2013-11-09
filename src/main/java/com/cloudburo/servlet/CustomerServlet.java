@@ -49,8 +49,8 @@ public class CustomerServlet extends CoreServlet {
 		logger.log(Level.INFO, "Going to fetch {0} objects", Customer.class.getName());
 		logger.log(Level.INFO, "Pathinfo {0}", req.getPathInfo());
 		// Partial response
-		String filter= req.getParameter("filter");
-		logger.log(Level.INFO, "Filter parameter {0}", filter);
+		String fields= req.getParameter("fields");
+		logger.log(Level.INFO, "Filter parameter {0}", fields);
 		// Retrieving the records from the persistent store
 		// If pathInfo == null then query all otherwise fetch one entry
 		if (req.getPathInfo() == null || req.getPathInfo().length()==1) {
@@ -81,11 +81,11 @@ public class CustomerServlet extends CoreServlet {
 				logger.log(Level.INFO, "Going to get customer {0}", key);
 				Customer customer = OfyService.ofy().load().type(Customer.class).filterKey(key).first().now();
 				if (customer != null) {
-					if (filter == null || filter.equals(""))
+					if (fields == null || fields.equals(""))
 						resp.getWriter().print((new GsonWrapper()).getGson().toJson(customer));
 					else
 						try {
-							resp.getWriter().print(partialResponse(filter,customer));
+							resp.getWriter().print(partialResponse(fields,customer));
 						} catch (Exception e) {
 							resp.sendError(resp.SC_BAD_REQUEST);
 							resp.getWriter().print(errorMsg(e.getMessage(),"0","0"));
