@@ -15,7 +15,7 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
-package com.cloudburo.entity;
+package com.cloudburo.servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,6 +40,7 @@ import org.joda.time.format.ISODateTimeFormat;
 
 public class GsonWrapper {
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GsonWrapper.class.getCanonicalName());
 	private GsonBuilder gsonBuilder;
 	private Gson gson;

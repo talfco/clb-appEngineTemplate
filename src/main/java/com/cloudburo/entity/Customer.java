@@ -39,7 +39,4 @@ public class Customer {
 	public String birthdate;
 	public String citizenship;
 	public String mobile;
-	
-	
-	
 }
