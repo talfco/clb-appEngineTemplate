@@ -18,26 +18,20 @@
 package com.cloudburo.entity;
 
 import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyFactory;
 import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.impl.translate.opt.joda.LocalDateTranslatorFactory;
-import com.googlecode.objectify.impl.translate.opt.joda.LocalDateTimeTranslatorFactory;
 
+import com.cloudburo.servlet.OfyService;
 
-public class OfyService {
+/**
+ *   Extend the cloudburo OfyService to get the Date/DateTime Translator configured
+ */
+public class MyOfyService extends OfyService {
 	static {
-		// Must be entered before any entity is registered 
-		ofy().factory().getTranslators().add(new LocalDateTranslatorFactory());
-		ofy().factory().getTranslators().add(new LocalDateTimeTranslatorFactory());
-        ofy().factory().register(Customer.class);
+		ObjectifyService.factory().register(Customer.class);
     }	
+	/** Mandatory to override the method **/
+    public static Objectify ofy() { return ObjectifyService.ofy(); }
 
-    public static Objectify ofy() {
-        return ObjectifyService.ofy();
-    }
 
-    public static ObjectifyFactory factory() {
-        return ObjectifyService.factory();
-    }
 	
 }
