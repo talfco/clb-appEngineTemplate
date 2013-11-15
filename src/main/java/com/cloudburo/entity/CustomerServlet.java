@@ -18,6 +18,7 @@
 package com.cloudburo.entity;
 
 import com.cloudburo.servlet.RestAPIServlet;
+import com.googlecode.objectify.Objectify;
 
 @SuppressWarnings("serial")
 public class CustomerServlet extends RestAPIServlet {
@@ -25,5 +26,9 @@ public class CustomerServlet extends RestAPIServlet {
 	@SuppressWarnings("rawtypes")
 	protected Class getPersistencyClass() {
 		return Customer.class;
+	}
+	
+	protected   Objectify ofy() {
+		return MyOfyService.ofy();
 	}
 }

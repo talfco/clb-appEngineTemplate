@@ -32,10 +32,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cloudburo.entity.MyOfyService;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.datastore.QueryResultIterator;
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.cmd.Query;
 
 /**
@@ -66,6 +66,8 @@ public abstract class RestAPIServlet extends HttpServlet {
 	@SuppressWarnings("rawtypes")
 	protected abstract Class getPersistencyClass();
 	
+	protected abstract  Objectify ofy();
+	
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
 		logger.log(Level.FINER, "Call with following path {0}", req.getPathInfo());
@@ -86,7 +88,7 @@ public abstract class RestAPIServlet extends HttpServlet {
 			throws ServletException, IOException {
 		logger.log(Level.INFO, "Updating Customer");
 		Object obj = (new GsonWrapper()).getGson().fromJson(req.getReader(),getPersistencyClass());
-		MyOfyService.ofy().save().entity(obj).now();
+		ofy().save().entity(obj).now();
 		//logger.log(Level.INFO, "Persisted Customer with id {0}",customer._id);
 		resp.getWriter().print((new GsonWrapper()).getGson().toJson(obj));
 	}
@@ -96,7 +98,7 @@ public abstract class RestAPIServlet extends HttpServlet {
 			throws ServletException, IOException {
 		logger.log(Level.INFO, "Creating Customer");
 		Object obj = (new GsonWrapper()).getGson().fromJson(req.getReader(),getPersistencyClass());
-		MyOfyService.ofy().save().entity(obj).now();
+		ofy().save().entity(obj).now();
 		//logger.log(Level.INFO, "Persisted Customer with id {0}",customer._id);
 		resp.getWriter().print((new GsonWrapper()).getGson().toJson(obj));
 	}
@@ -106,12 +108,12 @@ public abstract class RestAPIServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Key<?> objectKey = Key.create(getPersistencyClass(), Long.parseLong(req.getPathInfo().substring(1)));
 		logger.log(Level.INFO, "Deleting object with identifier {0}",  objectKey);
-		MyOfyService.ofy().delete().key(objectKey).now();
+		ofy().delete().key(objectKey).now();
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void getCollection(Class clazz, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		Query<?> query = MyOfyService.ofy().load().type(clazz).limit(sResponseLimit);
+		Query<?> query = ofy().load().type(clazz).limit(sResponseLimit);
 		String cursorStr = req.getParameter("cursor");
 		if (cursorStr != null)
 			query = query.startAt(Cursor.fromWebSafeString(cursorStr));
@@ -138,7 +140,7 @@ public abstract class RestAPIServlet extends HttpServlet {
 		if (tok.countTokens() == 1) {
 			Key<?> key = Key.create(clazz, Long.parseLong(tok.nextToken()));
 			logger.log(Level.INFO, "Going to get customer {0}", key);
-			Object businessObj = MyOfyService.ofy().load().type(clazz).filterKey(key).first().now();
+			Object businessObj = ofy().load().type(clazz).filterKey(key).first().now();
 			if (businessObj != null) {
 				if (fields == null || fields.equals(""))
 					resp.getWriter().print((new GsonWrapper()).getGson().toJson(businessObj));
