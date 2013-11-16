@@ -6,7 +6,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <groupId>com.cloudburo.appengine</groupId>
-    <artifactId>clb-appEngine</artifactId>
+    <artifactId>clb-appEngineTemplate</artifactId>
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
@@ -62,7 +62,6 @@
 		    <groupId>com.cloudburo</groupId>
 		    <artifactId>clb-appEngineBackend</artifactId>
 		    <version>0.0.1-SNAPSHOT</version>
-		    <scope>test</scope>
 		</dependency>  
         <!-- Test Dependencies -->
         <dependency>
