@@ -14,15 +14,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <repositories>
-        <repository>  
-            <id>cloudburo-clb-test-repo</id>  
-            <name>Cloudburo on GitHub</name>  
-            <url>http://talfco.github.io/clb-test/repository</url>   
-        </repository>
-   		<repository>  
-        	<id>cloudburo-clb-appEngineBackend-repo</id>  
-        	<name>Cloudburo on GitHub 1</name>  
-        	<url>http://talfco.github.io/clb-appEngineBackend/repository</url>   
+        <repository> 
+        	<id>clb-mvnrepo-snapshot</id>  
+        	<name>Cloudburo Public Maven Snapshot Repo on Github</name>  
+        	<releases><enabled>false</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        	<url>https://raw.github.com/talfco/clb_mvnrepo/raw/snapshots</url>  
+    	</repository>
+    	 <repository>  
+        	<id>clb-mvnrepo-release</id>  
+        	<name>Cloudburo Public Maven Release Repo on Github</name>  
+        	<releases><enabled>true</enabled></releases>
+            <snapshots><enabled>false</enabled></snapshots>
+        	<url>https://raw.github.com/talfco/clb_mvnrepo/raw/release</url>  
     	</repository>
     </repositories>
     <dependencies>
@@ -67,7 +71,7 @@
         <dependency>
 		    <groupId>com.cloudburo</groupId>
 		    <artifactId>clb-test</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
+		    <version>1.0.0</version>
 		    <scope>test</scope>
 		</dependency> 
         <dependency>
